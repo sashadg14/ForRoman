@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Agent side</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="/agent/users_css.css" rel="stylesheet">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="/agent/users_js.js"></script>
+    <script>
+        connect();
+    </script>
+</head>
+<body>
+<div class="chat_window">
+    <div class="container">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="text" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+        </div>
+        <div class="checkbox">
+        </div>
+        <button type="submit" class="btn btn-default" onclick="sendName($('#name').val())">Submit</button>
+    </div>
+</div>
+<div class="message_template">
+    <li class="message">
+        <div class="avatar"></div>
+        <div class="text_wrapper">
+            <div class="text"></div>
+        </div>
+    </li>
+</div>
+</body>
+</html>
