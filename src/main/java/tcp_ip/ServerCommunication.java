@@ -50,7 +50,7 @@ public class ServerCommunication {
         if (mUtils.isSignInUserMessage(message)) {
             handleUserRegistration(userChannel, name);
         } else if (mUtils.isSignInAgentMessage(message)) {
-            handleAgentRegistration(userChannel, name);
+            handleAgentRegistration(userChannel, name,1);
         }
     }
 
@@ -60,9 +60,9 @@ public class ServerCommunication {
         logger.log(Level.INFO, "Registered user " + name);
     }
 
-    public void handleAgentRegistration(AbstractSocket userChannel, String name) throws IOException {
+    public void handleAgentRegistration(AbstractSocket userChannel, String name,int chatCount) throws IOException {
         userChannel.sendMessage(Constants.SUCCESS_REGISTRED);
-        allClientsBase.addNewAgent(userChannel, name);
+        allClientsBase.addNewAgent(userChannel, name,chatCount);
         tryToCreateNewPair();
         logger.log(Level.INFO, "Registered agent " + name);
         // System.out.println("agent");
@@ -83,31 +83,44 @@ public class ServerCommunication {
 
     private void sendMessageToInterlocutorOf(AbstractSocket clientChannel, String message) {
         if (allClientsBase.doesItsUserChannel(clientChannel)) {
-            long id = allClientsBase.getClientByChannel(clientChannel).getId();
-            AbstractSocket agentChannel = allClientsBase.getUserInterlocutorChannel(clientChannel);
-            try {
-                agentChannel.sendMessage(gson.toJson(new AgentMessage(message, id)));
-            } catch (IOException e) {
-                logger.log(Level.INFO, "Client " + allClientsBase.getClientNameByChanel(agentChannel) + " disconnect");
-                handlingClientDisconnecting(agentChannel);
-            }
+            sendMessageToInterlocutorOfUser(clientChannel,message);
         } else if (allClientsBase.doesItsAgentChannel(clientChannel)) {
             try {
-                AgentMessage agentMessage = gson.fromJson(message, AgentMessage.class);
-                for (User user : allClientsBase.getAgentInterlocutors(clientChannel))
-                    if (user.getId() == agentMessage.getId()) {
-                        try {
-                            user.getAbstractSocket().sendMessage(agentMessage.getMessage());
-                        } catch (IOException e) {
-                            logger.log(Level.INFO, "Client " + allClientsBase.getClientNameByChanel(user.getAbstractSocket()) + " disconnect");
-                            handlingClientDisconnecting(user.getAbstractSocket());
-                        }
-                    }
+                sendMessageToInterlocutorOfAgent(clientChannel,message);
             } catch (Exception e) {
                 logger.log(Level.ERROR, "Wrong info " + message);
             }
         }
     }
+
+    public void sendMessageToInterlocutorOfUser(AbstractSocket userS,String message){
+        long id = allClientsBase.getClientByChannel(userS).getId();
+        AbstractSocket agentChannel = allClientsBase.getUserInterlocutorChannel(userS);
+        try {
+            agentChannel.sendMessage(gson.toJson(new AgentMessage(message, id)));
+        } catch (IOException e) {
+            handlingClientDisconnecting(agentChannel);
+        }
+    }
+
+    private void sendMessageToInterlocutorOfAgent(AbstractSocket agentS,String message){
+        AgentMessage agentMessage = gson.fromJson(message, AgentMessage.class);
+        //AgentMessage agentMessage=new AgentMessage("sfasd",1);
+        sendMessageToInterlocutorOfAgent(agentS,agentMessage);
+    }
+
+    public void sendMessageToInterlocutorOfAgent(AbstractSocket agentS,AgentMessage message){
+        for (User user : allClientsBase.getAgentInterlocutors(agentS))
+            if (user.getId() == message.getId()) {
+                try {
+                    user.getAbstractSocket().sendMessage(message.getMessage());
+                } catch (IOException e) {
+                    logger.log(Level.INFO, "Client " + allClientsBase.getClientNameByChanel(user.getAbstractSocket()) + " disconnect");
+                    handlingClientDisconnecting(user.getAbstractSocket());
+                }
+            }
+    }
+
 
     private void sendMessageBackToClient(AbstractSocket clientChannel, String message) throws IOException {
         if (allClientsBase.doesItsUserChannel(clientChannel)) {

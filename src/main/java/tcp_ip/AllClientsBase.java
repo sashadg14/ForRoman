@@ -1,11 +1,13 @@
 package tcp_ip;
 
 import javafx.util.Pair;
+import org.springframework.stereotype.Component;
 import tcp_ip.channels.AbstractSocket;
 import tcp_ip.channels.SChannel;
 import tcp_ip.client.Agent;
 import tcp_ip.client.Client;
 import tcp_ip.client.User;
+import utils.IdCounter;
 
 import java.nio.channels.SocketChannel;
 import java.util.Collections;
@@ -19,10 +21,11 @@ import java.util.stream.Collectors;
  * Created by Alex on 15.02.2018.
  */
 
+@Component
 public class AllClientsBase {
     private List<User> userList = Collections.synchronizedList(new LinkedList<User>());
 
-    private List<User> waitingUsersList = Collections.synchronizedList(new LinkedList<User>());
+    private final List<User> waitingUsersList = Collections.synchronizedList(new LinkedList<User>());
 
     private List<Agent> agentList = Collections.synchronizedList(new LinkedList<>());
 
@@ -30,11 +33,7 @@ public class AllClientsBase {
 
     private List<Pair<User, Agent>> pairUserAgentList = new LinkedList<>();
 
-    private AtomicLong atomicLong;
 
-    public AllClientsBase  () {
-        atomicLong = new AtomicLong();
-    }
 
     public int maxUsersInDialog=2;
     ;
@@ -45,28 +44,59 @@ public class AllClientsBase {
         return allClientsBase;
     }*/
 
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public List<User> getWaitingUsersList() {
+        return waitingUsersList;
+    }
+
+    public List<Agent> getAgentList() {
+        return agentList;
+    }
+
+    public List<Agent> getFreeArentsList() {
+        return freeArentsList;
+    }
+
     public void addNewUser(AbstractSocket channel, String name) {
-        userList.add(new User(atomicLong.getAndIncrement(), channel, name));
+        userList.add(new User(IdCounter.getAndIncrement(), channel, name));
+        // waitingUsersList.add(channel);
+    }
+
+    public void addNewUser(User user) {
+        userList.add(user);
         // waitingUsersList.add(channel);
     }
 
     public void addUserChannelInWaiting(AbstractSocket channel) {
         // System.out.println(getClientNameByChanel(channel)+"========================================");
-        for (User user : waitingUsersList)
-            if (user.getAbstractSocket().equals(channel))
-                return;
-        for (User user : userList)
-            if (user.getAbstractSocket().equals(channel))
-                waitingUsersList.add(user);
+        synchronized (waitingUsersList) {
+            for (User user : waitingUsersList)
+                if (user.getAbstractSocket().equals(channel))
+                    return;
+            for (User user : userList)
+                if (user.getAbstractSocket().equals(channel))
+                    waitingUsersList.add(user);
+        }
         //serverCommunication.tryToCreateNewPair();
     }
 
-    public void addNewAgent(AbstractSocket channel, String name) {
-        Agent agent = new Agent(atomicLong.getAndIncrement(), channel, name);
+    public void addNewAgent(AbstractSocket channel, String name,int chatsCount) {
+        Agent agent = new Agent(IdCounter.getAndIncrement(), channel, name,chatsCount);
         agentList.add(agent);
         addAgentInFree(agent);
         //serverCommunication.tryToCreateNewPair();
     }
+
+    public void addNewAgent(Agent agent){
+        agentList.add(agent);
+        addAgentInFree(agent);
+        //serverCommunication.tryToCreateNewPair();
+    }
+
+
 
     public boolean isAutorized(AbstractSocket channel) {
         for (User user : userList)
@@ -168,7 +198,6 @@ public class AllClientsBase {
         return users;
     }
 
-
     public Client getClientByChannel(AbstractSocket channel) {
         for (User user : userList)
             if (user.getAbstractSocket().equals(channel))
@@ -178,6 +207,18 @@ public class AllClientsBase {
                 return agent;
         return null;
     }
+
+    public Client getClientById(Long id) {
+        for (User user : userList)
+            if (user.getId()==id)
+                return user;
+        for (Agent agent : agentList)
+            if (agent.getId()==id)
+                return agent;
+        return null;
+    }
+
+
 
     public void removeUserChanelFromBase(AbstractSocket userChannel) {
         for (User user : waitingUsersList)

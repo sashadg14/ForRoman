@@ -14,6 +14,7 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
+
     @Bean
     public ServerCommunication serverCommunication(){
         return new ServerCommunication();
@@ -38,7 +39,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public AgentSocketHandler agentSocketHandler(){
         return new AgentSocketHandler();
     }
-
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

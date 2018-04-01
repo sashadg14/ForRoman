@@ -6,31 +6,21 @@ package utils;
 public class MessagesUtils {
 
     public boolean isSignInUserMessage(String s){
-        if(s.matches("\\/register\\s*user\\s*[a-z,A-Z,\\d]+"))
-            return true;
-        else return false;
+        return s.matches("\\/register\\s*user\\s*[a-z,A-Z,\\d]+");
     }
 
     public boolean isSignInAgentMessage(String s){
-        if(s.matches("\\/register\\s*agent\\s*[a-z,A-Z,\\d]+"))
-            return true;
-        else return false;
+        return s.matches("\\/register\\s*agent\\s*[a-z,A-Z,\\d]+");
     }
 
     public boolean isSignInMessage(String s){
-        if(s.matches("\\/register\\s*(agent|user)\\s*[a-z,A-Z,\\d]+"))
-            return true;
-        else return false;
+        return s.matches("\\/register\\s*(agent|user)\\s*[a-z,A-Z,\\d]+");
     }
     public boolean isExitMessage(String s){
-        if(s.matches("\\/exit"))
-            return true;
-        else return false;
+        return s.matches("\\/exit");
     }
     public boolean isLeaveMessage(String s){
-        if(s.matches("\\/leave"))
-            return true;
-        else return false;
+        return s.matches("\\/leave");
     }
 
     public String getNameFromMessage(String s){

@@ -31,7 +31,7 @@ public class AgentSocketHandler extends TextWebSocketHandler {
             System.out.println(message.getPayload());
             if(value.containsKey("name")) {
                 String name= (String) value.get("name");
-                serverCommunication.handleAgentRegistration(webSocket,name);
+                serverCommunication.handleAgentRegistration(webSocket,name,5);
             }
             else if(allClientsBase.isAutorized(webSocket))
             serverCommunication.handleMessagesFromAutorizedUser(webSocket,value.get("message").toString());

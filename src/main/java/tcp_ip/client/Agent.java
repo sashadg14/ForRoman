@@ -1,18 +1,17 @@
 package tcp_ip.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import tcp_ip.channels.AbstractSocket;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Agent implements Client{
-    private long id;
-    private AbstractSocket abstractSocket;
-    private String name;
+public class Agent extends Client{
     private AtomicInteger usersCount;
-    public Agent(long id, AbstractSocket abstractSocket, String name) {
-        this.id = id;
-        this.abstractSocket = abstractSocket;
-        this.name = name;
+    private int maxChatsCount;
+    public Agent(long id, AbstractSocket abstractSocket, String name, int maxChatsCount) {
+        super(id, abstractSocket, name);
+        this.usersCount = usersCount;
+        this.maxChatsCount = maxChatsCount;
         usersCount=new AtomicInteger();
     }
 
@@ -20,15 +19,7 @@ public class Agent implements Client{
         return usersCount;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public AbstractSocket getAbstractSocket() {
-        return abstractSocket;
-    }
-
-    public String getName() {
-        return name;
+    public int getMaxChatsCount() {
+        return maxChatsCount;
     }
 }
