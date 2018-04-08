@@ -35,7 +35,7 @@ public class AllClientsBase {
 
 
 
-    public int maxUsersInDialog=2;
+   // public int maxUsersInDialog=2;
     ;
     /*
     private static AllClientsBase allClientsBase=new AllClientsBase();
@@ -155,7 +155,7 @@ public class AllClientsBase {
             if (a.equals(agent))
                 return;
         freeArentsList.add(agent);
-        if(agent.getUsersCount().get()==maxUsersInDialog)
+        if(agent.getUsersCount().get()==agent.getMaxChatsCount())
             agent.getUsersCount().decrementAndGet();
     }
 
@@ -256,11 +256,11 @@ public class AllClientsBase {
                     freeArentsList.remove(agent);
                     pairUserAgentList.add(pair);
                     break;
-                } else if (agent.getUsersCount().get() < maxUsersInDialog+1) {
+                } else if (agent.getUsersCount().get() < agent.getMaxChatsCount()+1) {
                     pair = new Pair<>(waitingUsersList.remove(0), agent);
                     agent.getUsersCount().incrementAndGet();
                     pairUserAgentList.add(pair);
-                    if (agent.getUsersCount().get() == maxUsersInDialog)
+                    if (agent.getUsersCount().get() == agent.getMaxChatsCount())
                         freeArentsList.remove(agent);
                     break;
                 }

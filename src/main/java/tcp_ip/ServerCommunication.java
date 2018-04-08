@@ -55,14 +55,23 @@ public class ServerCommunication {
     }
 
     public void handleUserRegistration(AbstractSocket userChannel, String name) throws IOException {
+        if(name.equals("")){
+            userChannel.sendMessage(Constants.ERROR_USERNAME_EMPTY);
+            return;
+        }
+
         userChannel.sendMessage(Constants.SUCCESS_REGISTRED);
         allClientsBase.addNewUser(userChannel, name);
         logger.log(Level.INFO, "Registered user " + name);
     }
 
-    public void handleAgentRegistration(AbstractSocket userChannel, String name,int chatCount) throws IOException {
-        userChannel.sendMessage(Constants.SUCCESS_REGISTRED);
-        allClientsBase.addNewAgent(userChannel, name,chatCount);
+    public void handleAgentRegistration(AbstractSocket agentChannel, String name,int chatCount) throws IOException {
+        if(name.equals("")){
+            agentChannel.sendMessage(Constants.ERROR_USERNAME_EMPTY);
+            return;
+        }
+        agentChannel.sendMessage(Constants.SUCCESS_REGISTRED);
+        allClientsBase.addNewAgent(agentChannel, name,chatCount);
         tryToCreateNewPair();
         logger.log(Level.INFO, "Registered agent " + name);
         // System.out.println("agent");

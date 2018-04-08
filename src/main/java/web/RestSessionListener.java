@@ -14,6 +14,7 @@ import tcp_ip.client.Client;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.lang.reflect.Method;
 
 @Component
 public class RestSessionListener implements HttpSessionListener {
@@ -32,7 +33,7 @@ public class RestSessionListener implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent httpSessionEvent) {
         //System.out.println("CREATE");
-        httpSessionEvent.getSession().setMaxInactiveInterval(100);
+        httpSessionEvent.getSession().setMaxInactiveInterval(300);
     }
 
     @Override

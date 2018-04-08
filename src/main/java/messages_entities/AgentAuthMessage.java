@@ -4,6 +4,7 @@ public class AgentAuthMessage {
     private String name;
     private int chats;
     public AgentAuthMessage(){};
+
     public String getName() {
         return name;
     }
